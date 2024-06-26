@@ -11,5 +11,13 @@
       "src": "/(.*)",
       "dest": "dist/main.js"
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "master": false
+    }
+  },
+  "github": {
+    "autoJobCancelation": true
+  }
 }
