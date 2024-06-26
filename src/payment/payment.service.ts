@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 
 @Injectable()
 export class PaymentService {
   private stripe: Stripe;
+  private readonly amount = 100;
 
   constructor(private configService: ConfigService) {
     this.stripe = new Stripe(
@@ -15,15 +16,18 @@ export class PaymentService {
     );
   }
 
-  async createPaymentIntent(amount: number, email: string) {
-    return await this.stripe.paymentIntents.create({
-      amount,
-      currency: 'usd',
-      receipt_email: email,
-      automatic_payment_methods: {
-        enabled: true,
-        allow_redirects: 'never',
-      },
-    });
+  async createPaymentIntent(email: string) {
+    try {
+      return await this.stripe.paymentIntents.create({
+        amount: this.amount,
+        currency: 'usd',
+        receipt_email: email,
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to create payment intent');
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
@@ -26,6 +27,7 @@ async function bootstrap() {
   };
 
   app.enableCors(corsOptions);
+  app.useGlobalPipes(new ValidationPipe());
 
   if (process.env.VERCEL_ENV) {
     await app.init();
